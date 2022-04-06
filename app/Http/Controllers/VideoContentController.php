@@ -48,7 +48,7 @@ class VideoContentController extends Controller
     public function create()
     {
         $categories = Category::all();
-        return view('form-upload', compact('categories'));
+        return view('admin.videos.create', compact('categories'));
     }
 
     /**

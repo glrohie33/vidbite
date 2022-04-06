@@ -22,6 +22,7 @@
     <link rel="stylesheet" href="{{ asset('assets/vendor/fonts/flag-icon-css/flag-icon.min.css') }}">
     <link rel="stylesheet" href="{{ asset('assets/vendor/toastr/toastr.css') }}">
     <link rel="stylesheet" href="{{ asset('css/custom.css') }}">
+    <link href='http://fonts.googleapis.com/css?family=Lato|Oswald' rel='stylesheet' type='text/css'>
     <title>Lance Master | @yield('title')</title>
     <style>
         .custom-file-input:lang(en)~.custom-file-label::after {
@@ -44,13 +45,21 @@
             border-left: inherit;
             border-radius: 0 0.25rem 0.25rem 0;
         }
+
+        .title-logo{
+            font-size: 30px;
+    font-weight: bold;
+    margin-top: 20px;
+    margin-bottom: 0px;
+    padding: 0px 34px;
+        }
     </style>
 </head>
 
 <body>
 
     <div class="dashboard-main-wrapper">
-        <div class="dashboard-header">
+        {{-- <div class="dashboard-header">
             <nav class="navbar navbar-expand-lg bg-white fixed-top">
                 <a class="navbar-brand" href="index.html">Lance Master</a>
                 <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
@@ -177,9 +186,12 @@
                     </ul>
                 </div>
             </nav>
-        </div>
-        <div class="nav-left-sidebar sidebar-dark">
+        </div> --}}
+        <div class="nav-left-sidebar">
             <div class="menu-list">
+                    <h1 class="title-logo">
+                            FORA
+                        </h1>
                 <nav class="navbar navbar-expand-lg navbar-light">
                     <a class="d-xl-none d-lg-none" href="{{url('/admin')}}">Dashboard</a>
                     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
@@ -223,6 +235,20 @@
                                     <i class="fas fa-play"></i>
                                     Videos
                                 </a>
+                            </li>
+                            <li class="nav-item">
+                                {{-- <a class="nav-link" href="{{ route('logout') }}">
+                                    <i class="fas fa-play"></i>
+                                    Logout
+                                </a> --}}
+                                <a class="nav-link" href="{{ route('logout') }}" onclick="event.preventDefault();
+                                                     document.getElementById('logout-form').submit();">
+                                                      <i class="fas fa-play"></i>
+                                    {{ __('Logout') }}
+                                </a>
+                                <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
+                                    @csrf
+                                </form>
                             </li>
                             {{-- <li class="nav-item">
                                 <a class="nav-link" href="#" data-toggle="collapse" aria-expanded="false"

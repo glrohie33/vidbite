@@ -25,6 +25,11 @@ class Category extends Model
         return $this->hasMany('App\Models\VideoContent');
     }
 
+    public function views()
+    {
+        return $this->hasManyThrough(ContinueWatch::class, VideoContent::class, 'category_id', 'v_id');
+    }
+
     public function topics()
     {
         return $this->hasMany('App\Models\Category', 'parent_id');

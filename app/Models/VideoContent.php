@@ -39,9 +39,9 @@ class VideoContent extends Model
 
     public function views()
     {
-        //return  $this->hasMany('App\Models\ContinueWatch', 'v_id', 'id')->latest();
-        // return $this->hasMany('App\Models\ContinueWatch', 'v_id', 'id')->get();        
-        return $this->hasMany('App\Models\View', 'v_id', 'id')->latest();
+        return  $this->hasMany(ContinueWatch::class, 'v_id', 'id');
+        // // return $this->hasMany('App\Models\ContinueWatch', 'v_id', 'id')->get();        
+        // return $this->hasMany('App\Models\View', 'v_id', 'id')->latest();
     }
 
     public function messages()
@@ -73,9 +73,10 @@ class VideoContent extends Model
         return $this->hasMany('App\Models\VideoTag', 'video_id', 'id');
     }
 
-    public static function recommended(){
+    public static function recommended()
+    {
         $user = auth()->user();
-        if(!isset($user->id))
+        if (!isset($user->id))
             return VideoContent::distinct('title')->inRandomOrder()->limit(8)->get();
 
         $user_id = $user->id;
@@ -91,21 +92,22 @@ class VideoContent extends Model
 
         $videoQuery = VideoContent::query();
         $videoQuery->whereIn('category_id', $catIds);
-        $videoQuery->whereHas('video_tags', function($q) use($tagIds) {
+        $videoQuery->whereHas('video_tags', function ($q) use ($tagIds) {
             $q->whereIn('tag_id', $tagIds);
         });
-        foreach ($titles as $title){
-            if(!isset($title))
+        foreach ($titles as $title) {
+            if (!isset($title))
                 continue;
-            $words = explode(' ',$title);
-            foreach ($words as $word){
-                $videoQuery->orWhere('title', 'LIKE', '%'.$word.'%');
+            $words = explode(' ', $title);
+            foreach ($words as $word) {
+                $videoQuery->orWhere('title', 'LIKE', '%' . $word . '%');
             }
         }
         return $videoQuery->distinct()->inRandomOrder()->limit(8)->get();
     }
 
-    public function suggested(){
+    public function suggested()
+    {
         $catId = $this->category_id;
         $vTags = $this->video_tags;
         $words = explode(" ", $this->title);
@@ -114,14 +116,14 @@ class VideoContent extends Model
         $videoQuery->with(['category', 'views', 'user', 'continueWatches', 'video_tags.tag_name']);
         $videoQuery->where('id', '!=', $this->id);
         $videoQuery->where('category_id', $catId);
-        if(isset($vTags)){
+        if (isset($vTags)) {
             $tagIds = $vTags->pluck('tag_id')->toArray();
-            $videoQuery->whereHas('video_tags', function($q) use($tagIds) {
+            $videoQuery->whereHas('video_tags', function ($q) use ($tagIds) {
                 $q->whereIn('tag_id', $tagIds);
             });
         }
-        foreach ($words as $word){
-            $videoQuery->orWhere('title', 'LIKE', '%'.$word.'%');
+        foreach ($words as $word) {
+            $videoQuery->orWhere('title', 'LIKE', '%' . $word . '%');
         }
         return $videoQuery->inRandomOrder()->limit(5)->get();
     }

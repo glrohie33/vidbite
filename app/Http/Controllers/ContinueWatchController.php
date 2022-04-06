@@ -40,35 +40,34 @@ class ContinueWatchController extends Controller
         // dd('OOK');
         $request->validate([
             'time' => 'required'
-            ]);
+        ]);
         $user = auth()->user();
-        if($user === null){
+        if ($user === null) {
             return response()->json(['message' => 'User not authenticated'], 403);
         }
         $user_id = $user->id;
         $currentTime = $request->time;
-        $video = VideoContent::where('id',$videoId)->first();
-        if($video === null){
+        $video = VideoContent::where('id', $videoId)->first();
+        if ($video === null) {
             return response()->json(['message' => 'Video not found'], 404);
         }
 
         //use this one if you update the time instead of inserting a new row each time a time is saved.
-        $contWatchTime = ContinueWatch::where('v_id',$videoId)->where('u_id', $user_id)->latest()->first(); 
+        $contWatchTime = ContinueWatch::where('v_id', $videoId)->where('u_id', $user_id)->latest()->first();
 
-        if($contWatchTime === null){
+        if ($contWatchTime === null) {
             $contWatchModel = new ContinueWatch();
             $contWatchModel->u_id = auth()->id();
             $contWatchModel->v_id = $videoId;
             $contWatchModel->time = $currentTime;
             $contWatchModel->save();
-        }
-        else{
+        } else {
             $contWatchModel = ContinueWatch::find($contWatchTime->id);
             $contWatchModel->time = $currentTime;
             $contWatchModel->save();
         }
 
-        return response()->json(['message' => 'Time saved'], 200);//send http response as json back to the ajax call
+        return response()->json(['message' => 'Time saved'], 200); //send http response as json back to the ajax call
 
     }
 
@@ -117,23 +116,23 @@ class ContinueWatchController extends Controller
         //
     }
 
-    public function getTime(Request $request, $video){
+    public function getTime(Request $request, $video)
+    {
         $user = Auth::user();
-        if($user === null){
+        if ($user === null) {
             return response()->json(['message' => 'User not authenticated'], 403);
         }
-        $video = Video::where('id',$video)->first();
+        $video = Video::where('id', $video)->first();
         //get the time from saved time where you saved it with this data
-        $playbackTime = Somemodel::where('video_id',$video->id)->where('user_id',$user->id)->get()->last();//use this one if you insert the time instead of updating an existing row each time a time is saved.
-        $playbackTime = Somemodel::where('video_id',$video->id)->where('user_id',$user->id)->first();//use this one if you update the time instead of inserting a new row each time a time is saved.
-    
-        if($playbackTime === null){
+        $playbackTime = Somemodel::where('video_id', $video->id)->where('user_id', $user->id)->get()->last(); //use this one if you insert the time instead of updating an existing row each time a time is saved.
+        $playbackTime = Somemodel::where('video_id', $video->id)->where('user_id', $user->id)->first(); //use this one if you update the time instead of inserting a new row each time a time is saved.
+
+        if ($playbackTime === null) {
             //there's no saved time
             $playbackTime = 0;
-        }else{
-            $playbackTime = $playbackTime->currentTime;//use what column you saved the time in.
+        } else {
+            $playbackTime = $playbackTime->currentTime; //use what column you saved the time in.
         }
         return response()->json(['playbackTime' => $playbackTime], 200);
     }
-
 }

@@ -2,11 +2,15 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\ContinueWatch;
 use App\Models\User;
-use App\Models\VideoContent;
 use App\Models\View;
+use App\Models\Category;
+use App\Models\VideoContent;
+use Illuminate\Http\Request;
+use App\Models\ContinueWatch;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Validator;
 
 class HomeController extends Controller
 {
@@ -72,12 +76,14 @@ class HomeController extends Controller
             }
         }
 
-
-
-
-
-
-
+        $today = Carbon::now()->format("Y-m-d");
+        $categories = Category::withCount(['views'])->withSum('views', 'time')->orderBy('views_count', 'DESC')->get();
+        $activeUsers = User::whereHas('continueWatches', function ($query) use ($today) {
+            $query->whereDate('created_at', "=", $today);
+        })->get();
+        $views = ContinueWatch::whereDate('created_at', "=", $today)->get();
+        $activePercentage = round(($activeUsers->count() * 100) / $users->count(), 2);
+        $videos = VideoContent::withCount(['views'])->withSum('views', 'time')->orderBy('views_count', 'DESC')->get();
         $viewed = (count($view) > 0) ? max($view) : 0;
 
 
@@ -85,7 +91,7 @@ class HomeController extends Controller
 
 
 
-        return view('dashboard', compact('users', 'no_users', 'no_super', 'no_admin',  'vidcont', 'allmax', 'viewed'));
+        return view('dashboard', compact('users', 'no_users', 'no_super', 'no_admin',  'vidcont', 'allmax', 'viewed', 'categories', 'videos', 'activePercentage', 'views'));
 
 
 
@@ -95,6 +101,42 @@ class HomeController extends Controller
 
     }
 
+    public function chartData(Request $request)
+    {
+        $validator = Validator::make($request->all(), ['chartType' => "required"]);
+        if ($validator->fails()) {
+            return response()->json(["status" => false, "errors" => $validator->errors()->all()]);
+        }
+        $data = [];
+        $type = $request->chartType;
+        switch ($type) {
+            case "daily":
+                $today = Carbon::now();
+                $startOfWeek = $today->startOfWeek(Carbon::MONDAY);
+                $i = 0;
+                $data[] = User::whereHas('continueWatches', function ($query) use ($startOfWeek) {
+                    $query->whereDate('created_at', "=", $startOfWeek);
+                })->count();
+                while ($i < 6) {
+                    $today = $startOfWeek->addDays(1);
+                    $data[] = User::whereHas('continueWatches', function ($query) use ($today) {
+                        $query->whereDate('created_at', "=", $today);
+                    })->count();
+                    $i++;
+                }
+                break;
+            case 'monthly':
+                $i = 1;
+                while ($i <= 12) {
+                    $data[] = User::whereHas('continueWatches', function ($query) use ($i) {
+                        $query->whereMonth('created_at', "=", $i);
+                    })->count();
+                    $i++;
+                }
+                break;
+        }
+        return response()->json(['status' => true, 'data' => $data]);
+    }
     public function allUsers()
     {
         $users = User::all();

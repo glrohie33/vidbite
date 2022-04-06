@@ -172,6 +172,7 @@ Route::group(['middleware' => 'auth', 'web', 'verified'], function () {
         Route::get('/videos/create', [VideoContentController::class, 'create'])->name("video.create");
         Route::get('/video/{id}', [VideoContentController::class, 'detail'])->name("video.detailP");
         Route::post('/video', [VideoContentController::class, 'store'])->name("video.upload");
+        Route::get("/chartData", [HomeController::class, 'chartData'])->name("chart_data");
     });
 
     //User Routes

@@ -850,13 +850,9 @@
                 });
 
                 item.addEventListener('timeupdate', event => {
-                    let req_stat = item.currentTime % 3;
-                    if(req_stat <= 0.4){
-                        let vid_id = item.getAttribute("data-id");
-                        console.log(req_stat);
-                        syncWatchTime(vid_id, item.currentTime)
-                    }
-
+                    let req_stat = item.currentTime;
+                    let vid_id = item.getAttribute("data-id");
+                    syncWatchTime(vid_id, item.currentTime)
                 });
             })
 

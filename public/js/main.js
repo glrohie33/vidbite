@@ -94,59 +94,135 @@
 // <block:config:0>
 // <block:setup:1>
 
-const labels = [
-    'Monday',
-    'Tuesday',
-    'Wednesday',
-    'Thursday',
-    'Friday',
-    'Saturday',
-    'Sunday'
-];
-const data = {
-    labels: labels,
-    datasets: [
-        {
-        label: 'Daily',
-        backgroundColor: 'rgb(255, 99, 132)',
-        borderColor: 'rgb(255, 99, 132)',
-        data: [0, 10, 5, 2, 20, 30, 45, 25],
-    },
-        {
-        label: 'Weekly',
-        backgroundColor: 'rgb(0, 0, 255)',
-        borderColor: 'rgb(0, 0, 255)',
-        data: [-10, 0, 15, 20, 5, 35, 40, 20],
-    }
-]
-};
-// </block:setup>
-
-const config = {
-    type: 'line',
-    data: data,
-    options: {
-        responsive: true,
-        plugins: {
-            legend: {
-                position: 'top',
-            },
-            title: {
-                display: true,
-                text: 'Daily/Weekly/Yearly'
-            }
-        }
-    },
-};
 // </block:config>
 
 // module.exports = {
 //     actions: actions,
 //     config: config,
 // };
+var data = {
+	labels: [],
+	datasets: [
+		{
+			label: "Viewers",
+			backgroundColor: "rgb(169,182,189)",
+			borderColor: "rgb(169,182,189)",
+			borderWidth: 1,
+			borderRadius: 10,
+			barPercentage: 0.5,
+			hoverBackgroundColor: "rgb(75, 66, 145)"
+		},
+		{
+			label: "Watched",
+			backgroundColor: "rgb(169,182,189)",
+			borderColor: "rgb(169,182,189)",
+			borderWidth: 1,
+			borderRadius: 10,
+			barPercentage: 0.5,
+			hoverBackgroundColor: "rgb(202,60,37)"
+		}
+	]
+};
 
-const myChart = new Chart(
-    document.getElementById('myChart'),
-    config
+const config = {
+	type: "bar",
+	data: data,
+	options: {
+		responsive: true,
+		plugins: {
+			legend: {
+				position: "top",
+				display: false
+			},
+			title: {
+				display: false,
+				text: "Daily/Weekly/Yearly"
+			}
+		},
+		scales: {
+			x: {
+				grid: {
+					display: false
+				}
+			}
+		}
+	}
+};
+const myChart = new Chart(document.getElementById("myChart"), config);
 
-);
+var chartOptions = document.querySelector("#chartOptions").value;
+
+function getChartData(chartOptions) {
+	fetch(`/admin/chartData?chartType=${chartOptions}`)
+		.then((resp) => resp.json())
+		.then((resp) => {
+			if (resp.status) {
+				setChartData(chartOptions, resp.data);
+			}
+		});
+}
+
+function setChartData(label, data) {
+	var labels = [];
+	switch (label) {
+		case "daily":
+			labels = [
+				"Monday",
+				"Tuesday",
+				"Wednesday",
+				"Thursday",
+				"Friday",
+				"Saturday",
+				"Sunday"
+			];
+			break;
+		case "monthly":
+			labels = [
+				"Jan",
+				"Feb",
+				"March",
+				"Apr",
+				"May",
+				"Jun",
+				"Jul",
+				"Aug",
+				"Sep",
+				"Oct",
+				"Nov",
+				"Dec"
+			];
+			break;
+	}
+
+	myChart.data.labels = labels;
+	myChart.data.datasets.forEach((dataset) => {
+		dataset.data = data;
+	});
+	myChart.update();
+}
+
+getChartData(chartOptions);
+// const labels = [
+// 	"Monday",
+// 	"Tuesday",
+// 	"Wednesday",
+// 	"Thursday",
+// 	"Friday",
+// 	"Saturday",
+// 	"Sunday"
+// ];
+// const data = {
+// 	labels: labels,
+// 	datasets: [
+// 		{
+// 			label: "Daily",
+// 			backgroundColor: "rgb(169,182,189)",
+// 			borderColor: "rgb(169,182,189)",
+// 			data: [0, 10, 5, 2, 20, 30, 45, 25],
+// 			borderWidth: 1,
+// 			borderRadius: 10,
+// 			barPercentage: 0.5
+// 		}
+// 	]
+// };
+// </block:setup>
