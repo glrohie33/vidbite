@@ -57,13 +57,14 @@
 
         .nav-link {
             color: #fff;
+            transition:0.5s;
         }
 
         .nav-link.active {
             background-color: transparent !important;
             border: none !important;
             color: #fff;
-            border-bottom: 2px solid #fff !important;
+            border-bottom: 2px solid #000 !important;
             margin-bottom: 15px
         }
 
@@ -73,7 +74,8 @@
 
         .nav-link:hover {
             border: none !important;
-            border-bottom: 2px solid #fff !important
+            border-bottom: 2px solid #000 !important;
+            transition:1s;
         }
 
         .tab-content {
@@ -219,11 +221,9 @@
                     </li>
                 @else
 
+                    
                     <li class="nav-item active">
-                        <a class="nav-link" href="{{ route('register') }}">Register</a>
-                    </li>
-                    <li class="nav-item active">
-                        <a class="nav-link" href="{{ route('login') }}">Login</a>
+                        <a class="nav-link" href="{{ route('login') }}">Sign In</a>
                     </li>
                 @endauth
 
@@ -273,7 +273,101 @@
                                         <div>
                                             {{ $video->title }}
                                         <p class="float-right">
-@if (isset($video->views))
+                                @if (isset($video->views))
+                                    {{ sizeof($video->views) }} Views
+                                                @endif
+                                        </p>
+                                    </div>
+                                </div> -->
+                                    <div class="details mt-1">
+                                        <div class="profile-pic">
+                                            <img src="{{ asset('assets/front/images/dummy.jpg') }}" alt="">
+                                        </div>
+                                        <div class="video-details">
+                                            <div>{{ $video->title }}</div>
+
+                                        </div>
+                                        <p class="ml-auto">
+                                            @if (isset($video->views))
+                                                {{ sizeof($video->views) }} Views
+                                            @endif
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    @endforeach
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-12">
+            <div class="heading">
+                <h2>News</h2>
+            </div>
+            <div class="slick-slider">
+                <div class="row">
+
+                    @foreach ($newsVideos as $video)
+                        <div class="col-3 video-box">
+                            <div class="boxImg">
+                                <img width="100%" height="150" src="{{ asset($video->thumbnail) }}" data-href="{{ URL::to('/video', $video->id) }}"
+                                     class="video-list clickable" />
+                                {{-- <video controls width='100%' id="recommendedVideoPlayer{{ $video->id }}" height='200px' onclick="playVideo(this.id);">
+                                    <source src="{{ asset($video->video_path) }}">
+                                </video> --}}
+                                <div class="pt-3 video-content">
+                                <!--  <div class="title">
+                                        <div>
+                                            {{ $video->title }}
+                                        <p class="float-right">
+                                @if (isset($video->views))
+                                    {{ sizeof($video->views) }} Views
+                                                @endif
+                                        </p>
+                                    </div>
+                                </div> -->
+                                    <div class="details mt-1">
+                                        <div class="profile-pic">
+                                            <img src="{{ asset('assets/front/images/dummy.jpg') }}" alt="">
+                                        </div>
+                                        <div class="video-details">
+                                            <div>{{ $video->title }}</div>
+
+                                        </div>
+                                        <p class="ml-auto">
+                                            @if (isset($video->views))
+                                                {{ sizeof($video->views) }} Views
+                                            @endif
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    @endforeach
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-12">
+            <div class="heading">
+                <h2>Trending</h2>
+            </div>
+            <div class="slick-slider">
+                <div class="row">
+
+                    @foreach ($trendingVideos as $video)
+                        <div class="col-3 video-box">
+                            <div class="boxImg">
+                                <img width="100%" height="150" src="{{ asset($video->thumbnail) }}" data-href="{{ URL::to('/video', $video->id) }}"
+                                     class="video-list clickable" />
+                                {{-- <video controls width='100%' id="recommendedVideoPlayer{{ $video->id }}" height='200px' onclick="playVideo(this.id);">
+                                    <source src="{{ asset($video->video_path) }}">
+                                </video> --}}
+                                <div class="pt-3 video-content">
+                                <!--  <div class="title">
+                                        <div>
+                                            {{ $video->title }}
+                                        <p class="float-right">
+                                @if (isset($video->views))
                                     {{ sizeof($video->views) }} Views
                                                 @endif
                                         </p>

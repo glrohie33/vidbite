@@ -39,7 +39,7 @@
     font-weight:700;
     margin-bottom:0px;
 }
-.toggles{
+.toggles,.date-range{
     margin-bottom: 20px;
 }
 .chart-header #chartOptions{
@@ -111,6 +111,10 @@ td,th{
     background:none !important;
     border:none !important;
 }
+
+.table{
+    table-layout: fixed;
+}
 </style>
 <div class="dashboard-ecommerce">
     <div class="container-fluid dashboard-content ">
@@ -144,7 +148,7 @@ td,th{
                     <div class="col-md-3 col-sm-12 col-12">
                         <div class="card">
                             <div class="card-body">
-                                <h3 class="text-muted card-title">Active Users</h3>
+                                <h3 class=" card-title">Active Users</h3>
                                 <div class="metric-value">
                                     <h1 class="mb-1" >{{ count($no_users) }} </h1>
                                     <!--<h4>{{ $activePercentage }}%</h4>-->
@@ -156,7 +160,7 @@ td,th{
                     <div class=" col-md-3 col-sm-12 col-12">
                         <div class="card ">
                             <div class="card-body">
-                                <h3 class="text-muted">Watch Time (Hrs)</h3>
+                                <h3 class="">Watch Time (Hrs)</h3>
                                 <div class="metric-value d-inline-block">
                                     <h1 class="mb-1">{{ $views->count() }}</h1>
                                 </div>
@@ -181,12 +185,28 @@ td,th{
                                     <h1 class="title">
                                         Chart
                                     </h1>
-                                    <select class="form-control input-sm" id="chartOptions" onchange="getChartData(this.value)">
+                                    <select class="form-control input-sm" id="chartOptions" onchange="setChart(this.value)">
                                         <option value="daily">Daily</option>
                                         <option value="weekly">Weekly</option>
                                         <option value="monthly">Monthly</option>
-                                        <option value="yearly">Yearly</option>
+                                        <option value="range">Range</option>
                                     </select>
+                                </div>
+                                <div class="row date-range" style="display:none;">
+                                    <div class="col-md-5">
+                                        <label>Start Date</label>
+                                        <input type="date" class="form-control start_date">
+                                    </div>
+                                    <div class="col-md-5">
+                                        <label>End Date</label>
+                                        <input type="date" class="form-control end_date">
+                                    </div>
+                                    <div class="col-md-2" style="padding: 0px;align-self: end;">
+                                        <button class="btn btn-info btn-block" style="padding: 7px 0px;" onclick="displayRange()">Set</button>
+                                    </div>
+                                    <div class="col-md-12">
+                                        <span class="text-danger error_message"></span>
+                                    </div>
                                 </div>
                                 <div class="toggles">
                                         <div class="toggle-btn">
@@ -290,7 +310,7 @@ td,th{
         </div>
     </div>
 </div>
-<div class="footer">
+{{-- <div class="footer">
     <div class="container-fluid">
         <div class="row">
             <div class="col-xl-6 col-lg-6 col-md-6 col-sm-12 col-12">
@@ -305,6 +325,6 @@ td,th{
             </div>
         </div>
     </div>
-</div>
+</div> --}}
 
 @endsection

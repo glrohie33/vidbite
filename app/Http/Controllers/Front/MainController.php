@@ -2,20 +2,21 @@
 
 namespace App\Http\Controllers\Front;
 
-use App\Http\Controllers\Controller;
+use App\Models\User;
+use App\Models\View;
 use App\Models\Banner;
 use App\Models\History;
 use App\Models\Notifies;
-use App\Models\User;
-use App\Models\VideoContent;
-use App\Models\Subscriber;
-use App\Models\ContinueWatch;
-use App\Models\VideoLike;
-use App\Models\View;
-use App\Models\SearchKeywords;
 use App\Models\Playlist;
-use Illuminate\Support\Facades\DB;
+use App\Models\VideoLike;
+use App\Models\Subscriber;
+use App\Models\VideoContent;
 use Illuminate\Http\Request;
+use App\Models\ContinueWatch;
+use App\Models\SearchKeywords;
+use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\DB;
+use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 
 class MainController extends Controller
@@ -74,10 +75,11 @@ class MainController extends Controller
                 ->get()->first();
             $video->record =  $record;
         }
+        $newsVideos = VideoContent::with(['views', 'user', 'continueWatches'])->whereRelation('category', 'name', 'news')->inRandomOrder()->take(8)->get();
 
         $banners = Banner::orderBy('order', 'asc')->get();
 
-        return view('front.index', compact(['user', 'recommendedVideos', 'watchlistVideos', 'contWatchesVideos', 'trendingVideos', 'banners']));
+        return view('front.index', compact(['user', 'recommendedVideos', 'watchlistVideos', 'contWatchesVideos', 'trendingVideos', 'banners', 'newsVideos']));
     }
 
     public function playVideo(Request $request, $id)
@@ -204,9 +206,13 @@ class MainController extends Controller
             }
             //dd($keywords);
         }
-        
+
         $banners = Banner::orderBy('order', 'asc')->get();
+        $newsVideos = VideoContent::whereRelation('category', 'name', 'news')->inRandomOrder()->take(8)->get();
         $recommendedVideos = VideoContent::inRandomOrder()->latest()->get();
-        return view('front.home', compact(['banners', 'recommendedVideos']));
+        $trendingVideos = VideoContent::whereHas('views', function ($query) {
+            $query->whereDate('updated_at', Carbon::now()->format('Y-m-d'));
+        })->withCount('views')->orderBy('views_count', 'DESC')->get();
+        return view('front.home', compact(['banners', 'recommendedVideos', 'trendingVideos', 'newsVideos']));
     }
 }

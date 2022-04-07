@@ -84,6 +84,57 @@
 
     <div class="videos-row row justify-content-md-center">
         <div class="col-lg-12">
+            <div class="heading"   style="text-de: 2px solid white">
+                <h2>News</h2>
+            </div>
+            <div class="slick-slider" >
+                <div class="row">
+                    @foreach ($newsVideos as $video)
+                        <div class="col-3 video-box">
+                            <div class="boxImg">
+                                @php 
+                                    if($video->continueWatches->first()){
+                                        $v_time = round($vide->record->continueWatches->first()->time);
+                                    }
+                                    else{
+                                        $v_time = 0;
+                                    }
+                                @endphp
+                                <img src="{{ asset($video->thumbnail) }}" data-href="{{ URL::to('/video', $video->id) }}"
+                                    class="video-list clickable" />
+                                {{-- <video controls width='100%' id="recommendedVideoPlayer{{ $video->record->id }}" height='200px' onclick="playVideo(this.id);">
+                                    <source src="{{ asset($video->record->video_path) }}">
+                                </video> --}}
+                                <div class="pt-3 video-content">
+                                    <div class="details mt-1">
+                                        <div class="profile-pic">
+                                            <img src="{{ asset('assets/front/images/dummy.jpg') }}" alt="">
+                                        </div>
+                                        <div class="video-details">
+                                            <div>{{ $video->title }}</div>
+                                            <div class="channel">
+                                                <a href="{{ route('channel.index', $video->user->id) }}" class="color-white">
+                                                    <span class="text-capitalize">{{ $video->user->name }}</span>
+                                                </a>
+                                            </div>
+                                        </div>
+                                        <p class="ml-auto">
+                                            @if (isset($video->views))
+                                            {{ sizeof($video->views) }} Views
+                                            @endif
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    @endforeach
+                </div>
+        </div>
+        </div>
+    </div>
+
+    <div class="videos-row row justify-content-md-center">
+        <div class="col-lg-12">
             <div class="heading">
                 <h2>Watch List</h2>
             </div>

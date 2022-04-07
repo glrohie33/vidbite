@@ -83,7 +83,7 @@ class HomeController extends Controller
         })->get();
         $views = ContinueWatch::whereDate('created_at', "=", $today)->get();
         $activePercentage = round(($activeUsers->count() * 100) / $users->count(), 2);
-        $videos = VideoContent::withCount(['views'])->withSum('views', 'time')->orderBy('views_count', 'DESC')->get();
+        $videos = VideoContent::withCount(['views'])->withSum('views', 'time')->orderBy('views_sum_time', 'DESC')->get();
         $viewed = (count($view) > 0) ? max($view) : 0;
 
 
@@ -108,34 +108,87 @@ class HomeController extends Controller
             return response()->json(["status" => false, "errors" => $validator->errors()->all()]);
         }
         $data = [];
+        $labels = [];
         $type = $request->chartType;
         switch ($type) {
             case "daily":
                 $today = Carbon::now();
+                $today->hour = 0;
+                $today->minute = 0;
+                $today->second = 0;
+                $todays_date = $today->format('Y-m-d');
+                $i = 1;
+                while ($i <= 24) {
+                    $start = $today->format("H:s:i");
+
+                    $end = $today->addHour(1)->format("H:s:i");
+                    $end = ($end == "00:00:00") ? "24:00:00" : $end;
+                    $data['viewers'][] = User::whereHas('continueWatches', function ($query) use ($today, $start, $end, $todays_date) {
+                        $query->whereDate('created_at', $todays_date)
+                            ->whereTime('created_at', ">=", $start)
+                            ->whereTime('created_at', "<", $end);
+                    })->count();
+
+
+                    $timeSum = ContinueWatch::whereDate('created_at', $todays_date)
+                        ->whereTime('created_at', ">=", $start)
+                        ->whereTime('created_at', "<=", $end)->sum('time');
+                    $data['time_watched'][] = round($timeSum / 3600, 4);
+                    $i++;
+                }
+                break;
+            case "weekly":
+                $today = Carbon::now();
+
                 $startOfWeek = $today->startOfWeek(Carbon::MONDAY);
                 $i = 0;
-                $data[] = User::whereHas('continueWatches', function ($query) use ($startOfWeek) {
+                $data['viewers'][] = User::whereHas('continueWatches', function ($query) use ($startOfWeek) {
                     $query->whereDate('created_at', "=", $startOfWeek);
                 })->count();
+                $timeSum = ContinueWatch::whereDate('created_at', '=', $startOfWeek)->sum('time');
+                $data['time_watched'][] = round($timeSum / 3600, 4);
                 while ($i < 6) {
                     $today = $startOfWeek->addDays(1);
-                    $data[] = User::whereHas('continueWatches', function ($query) use ($today) {
+                    $data['viewers'][] = User::whereHas('continueWatches', function ($query) use ($today) {
                         $query->whereDate('created_at', "=", $today);
                     })->count();
+
+                    $timeSum = ContinueWatch::whereDate('created_at', '=', $today)->sum('time');
+                    $data['time_watched'][] = round($timeSum / 3600, 4);
                     $i++;
                 }
                 break;
             case 'monthly':
                 $i = 1;
                 while ($i <= 12) {
-                    $data[] = User::whereHas('continueWatches', function ($query) use ($i) {
-                        $query->whereMonth('created_at', "=", $i);
+                    $data['viewers'][] = User::whereHas('continueWatches', function ($query) use ($i) {
+                        $query->whereYear('created_at', date("Y"))->whereMonth('created_at', "=", $i);
                     })->count();
+                    $timeSum = ContinueWatch::whereYear('created_at', date("Y"))->whereMonth('created_at', '=', $i)->sum('time');
+                    $data['time_watched'][] = round($timeSum / 3600, 4);
+                    $i++;
+                }
+                break;
+            case 'range':
+                $start = Carbon::parse($request->input('from'));
+                $end = Carbon::parse($request->input('to'));
+                $diff = $start->diffInDays($end);
+                $i = 0;
+                $today = $start;
+                while ($i <= $diff) {
+                    $labels[] = $today->format('Y-m-d');
+                    $data['viewers'][] = User::whereHas('continueWatches', function ($query) use ($today) {
+                        $query->whereDate('created_at', "=", $today);
+                    })->count();
+
+                    $timeSum = ContinueWatch::whereDate('created_at', '=', $today)->sum('time');
+                    $data['time_watched'][] = round($timeSum / 3600, 4);
+                    $today = $start->addDays(1);
                     $i++;
                 }
                 break;
         }
-        return response()->json(['status' => true, 'data' => $data]);
+        return response()->json(['status' => true, 'data' => $data, 'labels' => $labels]);
     }
     public function allUsers()
     {
