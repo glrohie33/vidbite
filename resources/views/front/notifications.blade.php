@@ -1,5 +1,5 @@
 @extends('layout.front-master')
-@section('title', 'Lance Master | Home Page')
+@section('title', 'Lance Master | Notifications')
 
 @section('content')
     <section class="wrapper">

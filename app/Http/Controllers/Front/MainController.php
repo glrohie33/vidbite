@@ -24,8 +24,7 @@ class MainController extends Controller
     public function index(Request $request)
     {
         $keywords = [];
-        $user = auth()->user();
-        $user_id = $user->id;
+
         $viewCount = View::get();
         $searchkeywords = SearchKeywords::select('keywords')->get();
         //dd($searchkeywords);
@@ -41,7 +40,25 @@ class MainController extends Controller
         $recommendedVideos = VideoContent::distinct('title')->inRandomOrder()->limit(8)->get();*/
 
         //Get Recommended videos
-        $recommendedVideos = VideoContent::recommended();
+
+        $user = auth()->user();
+        $subscriptions = [];
+        $contWatchesVideos = [];
+        $watchlistVideos = [];
+        $notifications = [];
+        if (!empty($user)) {
+
+            $user_id = $user->id;
+            $recommendedVideos = VideoContent::recommended();
+            $subscriptions = Subscriber::where('subscriber_id', '=', $user->id)->orderBy('created_at', 'asc')->pluck('account_id');
+            $watchlistVideos = VideoContent::with(['views', 'user', 'continueWatches'])->wherein('u_id', $subscriptions)->inRandomOrder()->get();
+            $notifications = Auth::user()->notifications()->limit(5)->get()->toArray();
+            $contWatches = ContinueWatch::where('u_id', $user_id)->orderBy('updated_at', 'desc')->pluck('v_id');
+            $contWatchesVideos = VideoContent::with(['views', 'user', 'continueWatches'])->wherein('id', $contWatches)->inRandomOrder()->get();
+        } else {
+            $recommendedVideos = VideoContent::inRandomOrder()->latest()->get();
+        }
+
 
         // if (!empty($SearchKeywords)) {
         //     $v_ids = VideoContent::with('user')->select("id")
@@ -56,30 +73,27 @@ class MainController extends Controller
         // $recommendedVideos = VideoContent::distinct('title')->inRandomOrder()->limit(8)->get();
 
 
-        $subscriptions = Subscriber::where('subscriber_id', '=', $user->id)->orderBy('created_at', 'asc')->pluck('account_id');
-        $watchlistVideos = VideoContent::with(['views', 'user', 'continueWatches'])->wherein('u_id', $subscriptions)->inRandomOrder()->get();
 
-        $contWatches = ContinueWatch::where('u_id', $user_id)->orderBy('updated_at', 'desc')->pluck('v_id');
-        $contWatchesVideos = VideoContent::with(['views', 'user', 'continueWatches'])->wherein('id', $contWatches)->inRandomOrder()->get();
-
-        $trendingVideos = DB::table('video_contents')
-            ->join('continue_watches', 'video_contents.id', '=', 'continue_watches.v_id')
-            ->select('v_id', DB::raw('count(continue_watches.id) as count'))
-            ->groupBy('v_id')
-            ->orderBy('count', 'desc')
-            ->get();
-
-        foreach ($trendingVideos as $key => $video) {
-            $record = VideoContent::with(['views', 'user', 'continueWatches'])
-                ->where('id', $video->v_id)
-                ->get()->first();
-            $video->record =  $record;
-        }
-        $newsVideos = VideoContent::with(['views', 'user', 'continueWatches'])->whereRelation('category', 'name', 'news')->inRandomOrder()->take(8)->get();
 
         $banners = Banner::orderBy('order', 'asc')->get();
+        $keywords = [];
+        $viewCount = View::get();
+        $searchkeywords = SearchKeywords::select('keywords')->get();
+        //dd($searchkeywords);
+        if (!empty($searchkeywords)) {
+            foreach ($searchkeywords as $value) {
+                array_push($keywords, $value);
+            }
+            //dd($keywords);
+        }
 
-        return view('front.index', compact(['user', 'recommendedVideos', 'watchlistVideos', 'contWatchesVideos', 'trendingVideos', 'banners', 'newsVideos']));
+        $newsVideos = VideoContent::whereRelation('category', 'name', 'news')->inRandomOrder()->take(8)->get();
+        $trendingVideos = VideoContent::with('views')->whereHas('views', function ($query) {
+            $query->whereDate('updated_at', Carbon::now()->format('Y-m-d'));
+        })->withCount('views')->orderBy('views_count', 'DESC')->get();
+        // return view('front.home', compact(['banners', 'recommendedVideos', 'trendingVideos', 'newsVideos']));
+
+        return view('front.index', compact(['user', 'recommendedVideos', 'watchlistVideos', 'contWatchesVideos', 'trendingVideos', 'banners', 'newsVideos', 'notifications']));
     }
 
     public function playVideo(Request $request, $id)
@@ -196,23 +210,5 @@ class MainController extends Controller
 
     public function home()
     {
-        $keywords = [];
-        $viewCount = View::get();
-        $searchkeywords = SearchKeywords::select('keywords')->get();
-        //dd($searchkeywords);
-        if (!empty($searchkeywords)) {
-            foreach ($searchkeywords as $value) {
-                array_push($keywords, $value);
-            }
-            //dd($keywords);
-        }
-
-        $banners = Banner::orderBy('order', 'asc')->get();
-        $newsVideos = VideoContent::whereRelation('category', 'name', 'news')->inRandomOrder()->take(8)->get();
-        $recommendedVideos = VideoContent::inRandomOrder()->latest()->get();
-        $trendingVideos = VideoContent::whereHas('views', function ($query) {
-            $query->whereDate('updated_at', Carbon::now()->format('Y-m-d'));
-        })->withCount('views')->orderBy('views_count', 'DESC')->get();
-        return view('front.home', compact(['banners', 'recommendedVideos', 'trendingVideos', 'newsVideos']));
     }
 }

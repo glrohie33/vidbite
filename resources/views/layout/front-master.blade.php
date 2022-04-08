@@ -62,8 +62,8 @@
         .nav-link.active {
             background-color: transparent !important;
             border: none !important;
-            color: #fff;
-            border-bottom: 2px solid #fff !important;
+            color: #000;
+            border-bottom: 2px solid #000 !important;
             margin-bottom: 15px
         }
 
@@ -73,7 +73,8 @@
 
         .nav-link:hover {
             border: none !important;
-            border-bottom: 2px solid #fff !important
+            border-bottom: 2px solid #000 !important;
+            transition:0s;
         }
 
         .tab-content {
@@ -86,12 +87,19 @@
             height: 180px !important;
         }
 
+        .video-row{
+            margin-right:-5px !important;
+            margin-left:-5px !important;
+        }
+
         .video-box{
-            padding: 4px !important;
+             padding: 5px !important; 
         }
 
         .video-box .video-content{
-            padding: 10px !important;
+            padding: 0px !important;
+            display: flex;
+            flex-direction: row;
         }
 
         .video-box a{
@@ -150,6 +158,161 @@
             padding-bottom: 0px;
         }
 
+        .navigations{
+            display:flex;
+            align-items: center;
+            flex-basis: auto;
+            justify-content: space-between;
+            width: 100%;
+        }
+        
+        .navigations .menu{
+            margin-right:auto;
+        }
+
+        .notifications ul{
+            list-style-type: none;
+        }
+
+        .notifications li{
+            display: inline-block;
+        }
+
+        .search{
+            justify-content: center;
+        }
+
+        .search .form-group{
+            width: 100%;
+        }
+
+        .has-search .form-control{
+            background:#fff;
+            
+        }
+        .has-search .form-control-feedback{
+            color:#000 !important;
+        }
+
+        .notifications .nav-link{
+            font-size: 18px;
+        }
+        
+        .notifications .nav-link:hover{
+            border:unset !important;
+        }
+        
+        .notifications .nav-link{
+            border:unset !important;
+            margin:0px !important;
+                padding-right: 0px !important;
+    padding-left: 0px !important;
+    margin-left:20px !important;
+        }
+        .notifications .nav-link:hover a{
+            border:unset !important;
+        }
+      .dropdown-menu.show{
+            background:#fff !important;
+            width:155px;
+            padding:10px;
+        }
+        
+        .dropdown-menu#notification-menu.show{
+            width:250px !important;
+        }
+
+       .dropdown-menu.show li{
+            height:30px;
+            overflow: hidden;
+        }
+
+      .dropdown-menu.show li .profile-pic{
+            height:100% !important;
+            width: unset !important;
+            float: left;
+            min-width: unset !important;
+            min-height: unset !important;
+
+        }
+
+     .dropdown-menu.show li a{
+            display: block;
+            font-size: 12px;
+            color: #000;
+            text-align:left;
+        }
+        .boxImg img{
+            object-fit: cover;
+        }
+
+        .video-box .image-link-cover .profile-pic{
+            height: 50px;
+            width: 50px;
+            border-radius: 100%;
+            /* border: 1px solid; */
+            overflow: hidden;
+        }
+
+        .video-box .image-link-cover .profile-pic img{
+            height: 100%;
+            width: 100%;
+        }
+
+        .video-box .image-link-cover{
+            margin: 15px 13px 0px 0px;
+        }
+
+        .video-box .details{
+            display: block !important;
+            margin-top:15px !important;
+        }
+
+        .video-box .details .title-cover h3{
+            color:#000;
+            font-size: 1.4rem !important;
+            line-height: 2rem;
+            overflow: hidden; 
+            display: block; 
+            -webkit-line-clamp: 2;
+            display: box;
+            display: -webkit-box;
+            -webkit-box-orient: vertical;
+            text-overflow: ellipsis;
+            white-space: normal;
+            font-weight: 500;
+            text-transform: capitalize;
+            margin-bottom: 0px;
+        }
+
+        .heading h2{
+            margin-left:0px !important;
+            margin-right:0px !important;
+            margin-bottom:30px !important;
+        }
+
+        .details .channel{
+            display: block;
+        }
+
+        .details .channel .channel-inner{
+            display: flex;
+            flex-direction: row;
+        }
+        .details .channel .channel-inner a{
+            overflow: hidden;
+            white-space: nowrap;
+            text-overflow: ellipsis;
+            line-height: 22px;
+        }
+
+        .signin a{
+            font-size: 14px !important;
+            width: 70px;
+        }
+        .notifications .navbar-nav{
+            margin-left:0px;
+        }
     </style>
 
 
@@ -168,91 +331,116 @@
     <nav class="navbar navbar-expand-lg navbar-light">
 
         <a class="navbar-brand logo" href="#">
-            VID BITE
+            FORA
         </a>
-        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
-            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-        </button>
 
-        <div class="collapse navbar-collapse" id="navbarSupportedContent">
-            <ul class="navbar-nav mr-auto">
-                <li class="nav-item active">
-                    <a class="nav-link" href="{{ route('home') }}">Home</a>
-                </li>
-                <li class="nav-item active">
-                    <a class="nav-link" href="{{ route('watchlist') }}">Watchlist</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="./library.php">Live</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="{{ route('library') }}">Library</a>
-                </li>
-            </ul>
+        <div class="navigations">
+            <div class="menu">
+                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+                    aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                    <ul class="navbar-nav mr-auto">
+                        <li class="nav-item active">
+                            @auth()
+                                <a class="nav-link" href="{{ route('home') }}">Home</a>
+                            @else
 
-            <form class="form-inline my-2 my-lg-0" id="search-form" action="{{ route('home') }}" methdd="GET" autocomplete="off">
-                <!-- Actual search box -->
-                {{ csrf_field() }}
-                <div class="form-group has-search autocomplete ui-widget">
-                    <span class="fa fa-search form-control-feedback"></span>
-                    <input type="text" class="form-control typeahead " id="search" placeholder="Search">
-                </div>
-            </form>
-            <div class="right d-flex" style="margin-right: 30px;">
-                <div class="nav_right">
-                    <ul>
-                        <li class="nr_li dd_main">
-                            @auth
-                                <a href="JavaScript:void​(0)">
-                                    <i class="fas fa-user mr-1"></i>
-                                </a>
+                                <a class="nav-link" href="{{ route('default') }}">Home</a>
                             @endauth
-
-                            <div class="dd_menu">
-
-                                <div class="dd_right">
-                                    <ul>
-                                        <li class="add_pro details">
-                                            <div class="profile-pic" style="margin-left: 15px">
-                                                <img src="{{ asset('assets/front/images/dummy.jpg') }}" alt="">
-                                            </div>
-                                            <a href="{{ route('channel.index', auth()->user()) }}" style="margin-top: 0px !important; margin-left: 5px">{{ auth()->user()->name }}</a>
+                        </li>
+                        <li class="nav-item active">
+                            <a class="nav-link" href="{{ route('watchlist') }}">Watchlist</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="./library.php">Live</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ route('library') }}">Library</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            
+            <form class="form-inline my-2 my-lg-0 search" id="search-form" action="{{ route('home') }}" methdd="GET" autocomplete="off">
+                    <!-- Actual search box -->
+                    {{ csrf_field() }}
+                    <div class="form-group has-search autocomplete ui-widget">
+                        <span class="fa fa-search form-control-feedback"></span>
+                        <input type="text" class="form-control typeahead " id="search" placeholder="Search"/>
+                    </div>
+            </form>
+            <div class="right d-flex notifications" style="margin-right: 70px;">
+                    <ul class="navbar-nav">
+                        @auth
+                            <li class="nav-item dropdown">
+                                    <a class=" btn nav-link" data-toggle="dropdown" data-target="#authmenu" >
+                                        <i class="fas fa-user mr-1"></i>
+                                    </a>
+                                    <ul class="dropdown-menu" id="authmenu">
+                                        <li class="add_pro details dropdown-item">
+                                            <a href="{{ route('channel.index', auth()->user()) }}" style="">{{ auth()->user()->name }}</a>
                                         </li>
-                                        <li class="add_pro">
+                                        <li class="add_pro dropdown-item">
                                             <a href="{{ route('user.profile', auth()->user()) }}">Account</a>
                                         </li>
-                                        <li class="add_pro">
+                                        <li class="add_pro dropdown-item">
                                             <a href="#">Inbox</a>
                                         </li>
-                                        <li class="add_pro">
+                                        <li class="add_pro dropdown-item">
                                             <a href="{{ route('user.studio') }}">Creator Studio</a>
                                         </li>
-                                        <li class="add_pro">
+                                        <li class="add_pro dropdown-item">
                                             <a href="{{ route('logout') }}"
-                                       onclick="event.preventDefault();
-                                                     document.getElementById('logout-form').submit();">Sign Out</a>
+                                    onclick="event.preventDefault();
+                                                    document.getElementById('logout-form').submit();">Sign Out</a>
 
                                             <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
                                                 @csrf
                                             </form>
                                         </li>
                                     </ul>
-                                </div>
-                            </div>
-                        </li>
+                                  
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="{{ route('user.upload') }} ">
+                                    <i class="fas fa-video"></i>
+                                </a>
+                            </li>
+                            <li class="nav-item dropdown">
+                                <a class="btn nav-link" data-target="#notification-menu" data-toggle="dropdown">
+                                    <i class="fas fa-bell"></i>
+                                </a>
+                                <ul class="dropdown-menu" id="notification-menu">
+                                    <div class="dropdown-header">Notifications</div>
+                                    @if(count($notifications) > 0)
+                                        @foreach($notifications as $notification)
+                                            <li class="add_pro details dropdown-item">
+                                                <div class="profile-pic" style="margin-left: 15px">
+                                                    <img src="{{ asset('assets/front/images/dummy.jpg') }}" alt=""/>
+                                                </div>
+                                                <a href="{{ route('channel.index', auth()->user()) }}" style="margin-top: 0px !important; margin-left: 5px">{{ auth()->user()->name }}</a>
+                                            </li>
+                                        @endforeach
+                                    @else
+                                        <li class="add_pro details dropdown-item">
+                                            <a href="{{ route('channel.index', auth()->user()) }}" style="margin-top: 0px !important; margin-left: 5px">No new notifications</a>
+                                        </li>
+                                    @endif
+                                </ul>
+                            </li>
+                        @else
+                            <li class="nav-item active signin">
+                                <a class="nav-link" href="{{ route('login') }}">Sign In</a>
+                            </li>
+                        @endauth
                     </ul>
-                </div>
-                <div class="account d-flex ml-4 mr-4">
-                    <a href="{{ route('user.upload') }}">
-                        <i class="fas fa-video"></i>
-                    </a>
-                    <a href="{{ route('page.notifications') }}">
-                        <i class="fas fa-bell"></i>
-                    </a>
-                </div>
             </div>
         </div>
+        
+
+        
     </nav>
     <div class="container-fluid">
         @yield('content')
@@ -260,11 +448,11 @@
 
     <script src="https://kit.fontawesome.com/74d240b4ae.js" crossorigin="anonymous"></script>
     <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-3-typeahead/4.0.2/bootstrap3-typeahead.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
         integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous">
     </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-3-typeahead/4.0.2/bootstrap3-typeahead.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
         integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous">
     </script>
@@ -274,60 +462,59 @@
 
 
     <script>
-
         $( function() {
-            {{--$( "#search" ).autocomplete({--}}
-            {{--    source: function( request, response ) {--}}
-            {{--        // Fetch data--}}
-            {{--        var headers = { 'X-CSRF-TOKEN': $('input[name="_token"]').val()};--}}
-            {{--        $.ajax({--}}
-            {{--            url:"{{route('autocomplete')}}",--}}
-            {{--            type: 'get',--}}
-            {{--            dataType: "json",--}}
-            {{--            headers: headers,--}}
-            {{--            data: {--}}
-            {{--                search: request.term--}}
-            {{--            },--}}
-            {{--            success: function( data ) {--}}
-            {{--            response( data );--}}
-            {{--            }--}}
-            {{--        });--}}
-            {{--    },--}}
-            {{--    select: function (event, ui) {--}}
-            {{--        // Set selection--}}
-            {{--        $('#search').val(ui.item.label); // display the selected text--}}
-            {{--        return false;--}}
-            {{--    }--}}
-            {{--});--}}
+            $( "#search" ).autocomplete({
+                source: function( request, response ) {
+                    // Fetch data
+                    var headers = { 'X-CSRF-TOKEN': $('input[name="_token"]').val()};
+                    $.ajax({
+                        url:"{{route('autocomplete')}}",
+                        type: 'get',
+                        dataType: "json",
+                        headers: headers,
+                        data: {
+                            search: request.term
+                        },
+                        success: function( data ) {
+                            response( data );
+                        }
+                    });
+                },
+                select: function (event, ui) {
+                    // Set selection
+                    $('#search').val(ui.item.label); // display the selected text
+                    return false;
+                }
+            });
 
-            // $(".slick-slider").slick({
-            //     slidesToShow: 4,
-            //     slidesToScroll: 4,
-            //     infinite: false,
-            //     responsive: [
-            //         {
-            //             breakpoint: 1024,
-            //             settings: {
-            //                 slidesToShow: 3,
-            //                 slidesToScroll: 3,
-            //             }
-            //         },
-            //         {
-            //             breakpoint: 600,
-            //             settings: {
-            //                 slidesToShow: 2,
-            //                 slidesToScroll: 2
-            //             }
-            //         },
-            //         {
-            //             breakpoint: 480,
-            //             settings: {
-            //                 slidesToShow: 1,
-            //                 slidesToScroll: 1
-            //             }
-            //         }
-            //     ]
-            // });
+            $(".slick-slider").slick({
+                slidesToShow: 4,
+                slidesToScroll: 4,
+                infinite: false,
+                responsive: [
+                    {
+                        breakpoint: 1024,
+                        settings: {
+                            slidesToShow: 3,
+                            slidesToScroll: 3,
+                        }
+                    },
+                    {
+                        breakpoint: 600,
+                        settings: {
+                            slidesToShow: 2,
+                            slidesToScroll: 2
+                        }
+                    },
+                    {
+                        breakpoint: 480,
+                        settings: {
+                            slidesToShow: 1,
+                            slidesToScroll: 1
+                        }
+                    }
+                ]
+            });
 
         } );
 
@@ -341,7 +528,6 @@
         //         });
         //     }
         // });
-
         $('#search-form').submit(function( event ) {
             event.preventDefault();
             let q = $('#search').val();
