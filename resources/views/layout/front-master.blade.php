@@ -84,7 +84,8 @@
 
         .video-list {
             width: 100% !important;
-            height: 180px !important;
+            height: 100% !important;
+            object-fit:cover;
         }
 
         .video-row{
@@ -242,13 +243,16 @@
             color: #000;
             text-align:left;
         }
-        .boxImg img{
-            object-fit: cover;
+        .boxImg{
+        border-radius: 0px !important;
+        overflow:hidden;
+        height:180px;
+        
         }
 
         .video-box .image-link-cover .profile-pic{
-            height: 50px;
-            width: 50px;
+            height: 40px;
+            width: 40px;
             border-radius: 100%;
             /* border: 1px solid; */
             overflow: hidden;
@@ -260,18 +264,19 @@
         }
 
         .video-box .image-link-cover{
-            margin: 15px 13px 0px 0px;
+            margin: 15px 10px 0px 0px;
         }
 
         .video-box .details{
-            display: block !important;
             margin-top:15px !important;
+            display: flex !important;
+            justify-content: space-between;
+            width: 100%;
         }
 
         .video-box .details .title-cover h3{
             color:#000;
-            font-size: 1.4rem !important;
-            line-height: 2rem;
+            font-size:16px !important;
             overflow: hidden; 
             display: block; 
             -webkit-line-clamp: 2;
@@ -288,7 +293,7 @@
         .heading h2{
             margin-left:0px !important;
             margin-right:0px !important;
-            margin-bottom:30px !important;
+            margin-bottom:15px !important;
         }
 
         .details .channel{
